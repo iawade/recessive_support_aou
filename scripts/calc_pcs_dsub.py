@@ -1,9 +1,12 @@
+#!/usr/bin/env python3
+
 import hail as hl
 import sys
+import os
 
 # Retrieve input PLINK file path from command-line arguments
-input_bed = sys.argv[1]  # PLINK .bed file path
-output_scores = sys.argv[2]  # Output path for PCA scores (e.g., CSV or TSV file)
+input_bed = os.environ['INPUT_BED']  # PLINK .bed file path
+output_scores = os.environ['OUTPUT']  # Output path for PCA scores (e.g., CSV or TSV file)
 
 # Initialize Hail with appropriate resources
 hl.init()

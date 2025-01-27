@@ -33,7 +33,7 @@ monitor_memory() {
 monitor_memory &
 MONITOR_PID=$!
 
-mkdir -p ld_prune logs make_sparse_grm sample_selection 
+mkdir -p ld_prune logs make_sparse_grm sample_selection PCA nullglmm
 
 conda activate biallelic_effects
 
@@ -41,6 +41,7 @@ conda activate biallelic_effects
 echo "Starting a run of Snakemake workflow..."
 snakemake --snakefile "$WORKFLOW_FILE" --cores "$MAX_JOBS" --jobs 1 --max-status-checks-per-second 0.01 \
     --rerun-triggers mtime input \
+    -n
 
 echo "Run complete."
 
