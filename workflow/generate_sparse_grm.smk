@@ -23,7 +23,8 @@ tol = phenotype["tol"]
 rule all:
     input:
         "removed_array_data.txt",
-        expand("nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}_fitNullGLMM_results.txt", ancestry=ancestries, prune_method=prune_methods, phenotype_code=config["phenotype_code"])
+        expand("nullglmm/allofus_array_{ancestry}_for_vr.bed", ancestry=ancestries),
+        expand("nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}.varianceRatio.txt", ancestry=ancestries, prune_method=prune_methods, phenotype_code=config["phenotype_code"])
     output:
         "pipeline_complete.txt"
     shell:
@@ -50,9 +51,19 @@ rule filter_and_split_ancestry:
     shell:
         "bash scripts/filter_ancestry.sh ancestry/arrays {input[1]} {output}"
 
+rule create_plink_for_vr:
+    input:
+        "downloaded_data.txt",
+        "sample_selection/{ancestry}.tsv"
+    output:
+        "nullglmm/allofus_array_{ancestry}_for_vr.bed"
+    shell:
+        "bash scripts/create_plink_file_for_vr.sh ancestry/arrays {input[1]} {output}"
+
 rule delete_array_data:
     input:
-        expand("sample_selection/allofus_array_{ancestry}.bed", ancestry=glob_wildcards("sample_selection/{ancestry}.tsv").ancestry)
+        expand("sample_selection/allofus_array_{ancestry}.bed", ancestry=ancestries),
+        expand("nullglmm/allofus_array_{ancestry}_for_vr.bed", ancestry=ancestries)
     output:
         "removed_array_data.txt"
     shell:
@@ -105,16 +116,17 @@ rule combine_covars:
 
         # Extract the sample_ids (those with phenotype data and correct ancestry)
         # Assuming `person_id` is the identifier in your covariates file and this matches `sample_id`
-        cut -f1 {output[0]} > {output[1]}  # Save sample IDs to a text file
+        cut -d "," -f1 {output[0]} > {output[1]}  # Save sample IDs to a text file
         """
+
 rule fitnullglmm:
     input:
-        "ld_prune/allofus_array_{ancestry}_{prune_method}_wise.bed",
+        "nullglmm/allofus_array_{ancestry}_for_vr.bed",
         "nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}.csv",
         "make_sparse_grm/allofus_array_{ancestry}_{prune_method}_wise_relatednessCutoff_0.05_5000_randomMarkersUsed.sparseGRM.mtx",
         "nullglmm/sample_ids_{ancestry}_{prune_method}_{phenotype_code}.txt"  # The file with sample_ids
     output:
-        "nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}_fitNullGLMM_results.txt"
+        "nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}.varianceRatio.txt"
     params:
         phenocol=config["phenotype_code"],
         covarcollist=config["covarcollist"],
@@ -126,6 +138,6 @@ rule fitnullglmm:
         tol=tol
     shell:
         """
-        bash scripts/fit_null_glmm_wrapper.sh {input[0]} {output} {input[2]} {input[1]} {params.trait_type} {params.invnormalise} {params.phenocol} {params.covarcollist} {params.categcovarcollist} {params.sampleidcol} {params.tol} --SampleIDIncludeFile={input[3]}
+        bash scripts/fit_null_glmm_wrapper.sh {input[0]} {output} {input[2]} {input[1]} {params.trait_type} {params.invnormalise} {params.phenocol} {params.covarcollist} {params.categcovarcollist} {params.sampleidcol} {params.tol} {input[3]}
         """
 
