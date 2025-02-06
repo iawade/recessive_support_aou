@@ -35,12 +35,14 @@ MONITOR_PID=$!
 
 mkdir -p ld_prune logs make_sparse_grm sample_selection PCA nullglmm
 
+source /home/jupyter/anaconda3/etc/profile.d/conda.sh
 conda activate biallelic_effects
 
 # Run Snakemake with the specified options
 echo "Starting a run of Snakemake workflow..."
 snakemake --snakefile "$WORKFLOW_FILE" --cores "$MAX_JOBS" --jobs 1 --max-status-checks-per-second 0.01 \
     --rerun-triggers mtime input \
+    --touch
 
 echo "Run complete."
 

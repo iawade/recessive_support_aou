@@ -437,5 +437,15 @@
     "trait_type": "binary",
     "invnormalise": "FALSE",
     "tol": 0.02
+  },
+
+  {
+    "phenotype": "HbA1c",
+    "sex_specific_run": "",
+    "phenotype_ID": "HbA1c",
+    "definition": "N/A (quantitative trait)",
+    "trait_type": "quantitative",
+    "invnormalise": "TRUE",
+    "tol": 1e-05
   }
 ]

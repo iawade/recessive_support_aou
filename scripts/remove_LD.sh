@@ -1,6 +1,6 @@
 #!/bin/bash
 
-eval "$(conda shell.bash hook)"
+source /home/jupyter/anaconda3/etc/profile.d/conda.sh
 conda activate biallelic_effects
 
 # Input and output variables

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-eval "$(conda shell.bash hook)"
+source /home/jupyter/anaconda3/etc/profile.d/conda.sh
 conda activate biallelic_effects
 
 INPUT_STEM="$1"
@@ -14,14 +14,14 @@ UNIQUE_ID="$(basename "${INCLUSION_SAMPLES}" .tsv)"
 INPUT_BED="$INPUT_STEM.bed"
 INPUT_BIM="$INPUT_STEM.bim"
 INPUT_FAM="$INPUT_STEM.fam"
-FILTERED_STEM="merged_${UNIQUE_ID}_plink"
+FILTERED_STEM="merged_${UNIQUE_ID}_plink_for_vr"
 
 ANCESTRY_DIR="sample_selection"              # Directory containing site parts
 
 # Temporary file names
-TMP_PART1="tmp_chr1-7_${UNIQUE_ID}"
-TMP_PART2="tmp_chr8-24_${UNIQUE_ID}"
-TMP_MERGED="tmp_merged_${UNIQUE_ID}"
+TMP_PART1="tmp_chr1-7_${UNIQUE_ID}_for_vr"
+TMP_PART2="tmp_chr8-24_${UNIQUE_ID}_for_vr"
+TMP_MERGED="tmp_merged_${UNIQUE_ID}_for_vr"
 
 
 # Step 1: Subset chromosomes 1-7 and filter samples

@@ -1,9 +1,9 @@
 configfile: "config/config.yaml"
 
 # Quick pipeline for generating sparse GRM on All of Us data (NOT using dsub)
-
 prune_methods = ['snp']
-ancestries = ['amr', 'eas', 'sas']
+ancestries = ['afr', 'amr', 'eas', 'mid', 'sas']
+phenotypes = config['phenotype_code']  # ✅ Define this!
 
 import json
 
@@ -11,20 +11,36 @@ import json
 with open(config["json"]) as f:
     phenotype_data = json.load(f)
 
-# Access the values for the phenotype_code from the JSON
-phenotype = next(item for item in phenotype_data if item["phenotype_ID"] == config["phenotype_code"])
+# Access the values for each phenotype_code from the JSON
+phenotype_list = []
 
-# Now you can access the specific values from `phenotype`
-trait_type = phenotype["trait_type"]
-invnormalise = phenotype["invnormalise"]
-tol = phenotype["tol"]
+for pheno_code in phenotypes:  # Use the newly defined `phenotypes`
+    match = next((item for item in phenotype_data if item["phenotype_ID"] == pheno_code), None)
+    if match:
+        phenotype_list.append(match)
+    else:
+        print(f"Warning: Phenotype ID '{pheno_code}' not found in JSON.")
+
+# ✅ Now process all phenotypes
+# Example of handling each phenotype's details
+trait_type = {p["phenotype_ID"]: p["trait_type"] for p in phenotype_list}
+invnormalise = {p["phenotype_ID"]: p["invnormalise"] for p in phenotype_list}
+tol = {p["phenotype_ID"]: p["tol"] for p in phenotype_list}
 
 # Target Rule for Completion of Pipeline
 rule all:
     input:
         "removed_array_data.txt",
-        expand("nullglmm/allofus_array_{ancestry}_for_vr.bed", ancestry=ancestries),
-        expand("nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}.varianceRatio.txt", ancestry=ancestries, prune_method=prune_methods, phenotype_code=config["phenotype_code"])
+        expand(
+            "nullglmm/allofus_array_{ancestry}_for_vr.bed", 
+            ancestry=ancestries
+        ),
+        expand(
+            "nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}.varianceRatio.txt",
+            ancestry=ancestries, 
+            prune_method=prune_methods, 
+            phenotype_code=phenotypes  # ✅ Fixed reference
+        )
     output:
         "pipeline_complete.txt"
     shell:
@@ -107,7 +123,7 @@ rule combine_covars:
         "nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}.csv",
         "nullglmm/sample_ids_{ancestry}_{prune_method}_{phenotype_code}.txt"  # Output file for sample_ids
     params:
-        phenotype_code=config["phenotype_code"],
+        #phenotype_code=config["phenotype_code"],
         phenotype_file=config["phenotype_file"],
         covariates_file=config["covariates_file"]
     shell:
@@ -128,7 +144,7 @@ rule fitnullglmm:
     output:
         "nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}.varianceRatio.txt"
     params:
-        phenocol=config["phenotype_code"],
+        #phenocol=config["phenotype_code"],
         covarcollist=config["covarcollist"],
         categcovarcollist=config["categcovarcollist"],
         sampleidcol=config["sampleidcol"],
@@ -138,6 +154,6 @@ rule fitnullglmm:
         tol=tol
     shell:
         """
-        bash scripts/fit_null_glmm_wrapper.sh {input[0]} {output} {input[2]} {input[1]} {params.trait_type} {params.invnormalise} {params.phenocol} {params.covarcollist} {params.categcovarcollist} {params.sampleidcol} {params.tol} {input[3]}
+        bash scripts/fit_null_glmm_wrapper.sh {input[0]} {output} {input[2]} {input[1]} {params.trait_type} {params.invnormalise} {wildcards.phenotype_code} {params.covarcollist} {params.categcovarcollist} {params.sampleidcol} {params.tol} {input[3]}
         """
 
