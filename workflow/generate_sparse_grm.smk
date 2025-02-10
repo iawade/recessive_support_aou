@@ -2,8 +2,8 @@ configfile: "config/config.yaml"
 
 # Quick pipeline for generating sparse GRM on All of Us data (NOT using dsub)
 prune_methods = ['snp']
-ancestries = ['afr', 'amr', 'eas', 'mid', 'sas']
-phenotypes = config['phenotype_code']  # ✅ Define this!
+ancestries = ['afr', 'amr', 'eas', 'eur', 'mid', 'sas']
+phenotypes = config['phenotype_code'] 
 
 import json
 
@@ -21,7 +21,7 @@ for pheno_code in phenotypes:  # Use the newly defined `phenotypes`
     else:
         print(f"Warning: Phenotype ID '{pheno_code}' not found in JSON.")
 
-# ✅ Now process all phenotypes
+# Now process all phenotypes
 # Example of handling each phenotype's details
 trait_type = {p["phenotype_ID"]: p["trait_type"] for p in phenotype_list}
 invnormalise = {p["phenotype_ID"]: p["invnormalise"] for p in phenotype_list}
@@ -128,7 +128,7 @@ rule combine_covars:
         covariates_file=config["covariates_file"]
     shell:
         """
-        python scripts/combine_pheno_and_covars.py {params.covariates_file} {params.phenotype_file} {input} {output}
+        python scripts/combine_pheno_and_covars.py {params.phenotype_file} {input} {output[0]}
 
         # Extract the sample_ids (those with phenotype data and correct ancestry)
         # Assuming `person_id` is the identifier in your covariates file and this matches `sample_id`
@@ -144,14 +144,13 @@ rule fitnullglmm:
     output:
         "nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}.varianceRatio.txt"
     params:
-        #phenocol=config["phenotype_code"],
         covarcollist=config["covarcollist"],
         categcovarcollist=config["categcovarcollist"],
         sampleidcol=config["sampleidcol"],
         n_threads=config["n_threads_step_one"],
-        trait_type=trait_type,
-        invnormalise=invnormalise,
-        tol=tol
+        trait_type=lambda wildcards: trait_type[wildcards.phenotype_code],   # Extract the correct trait type
+        invnormalise=lambda wildcards: invnormalise[wildcards.phenotype_code],  # Extract invnormalise value
+        tol=lambda wildcards: tol[wildcards.phenotype_code]   # Extract the correct tol value
     shell:
         """
         bash scripts/fit_null_glmm_wrapper.sh {input[0]} {output} {input[2]} {input[1]} {params.trait_type} {params.invnormalise} {wildcards.phenotype_code} {params.covarcollist} {params.categcovarcollist} {params.sampleidcol} {params.tol} {input[3]}
