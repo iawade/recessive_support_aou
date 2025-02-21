@@ -1,28 +1,25 @@
 #!/bin/bash
 
-# Activate conda environment
-source /home/jupyter/anaconda3/etc/profile.d/conda.sh
-conda activate biallelic_effects
-
 # Input and output variables
-GENOTYPE_PLINK="${1%.bed}"       # Input file prefix (strip .bed if provided)
-OUTPUT_PREFIX="${2%.varianceRatio.txt}"
-SPARSE_GRM="$3"
-PHENOFILE="$4"
-TRAITTYPE="$5"
-INVNORMALISE="$6"
-PHENOCOL="$7"
-COVARCOLLIST="$8"
-CATEGCOVARCOLLIST="$9"
-SAMPLEIDCOL="${10}"
-TOL="${11}"
-SAMPLEIDS="${12}"
+GENOTYPE_PLINK="${BED%.bed}"       # Input file prefix (strip .bed if provided)
+OUTPUT_PREFIX="${VARIANCE_RATIO%.varianceRatio.txt}"
+SPARSE_GRM="$GRM"
+SPARSE_GRM_IDS="$GRM_IDS"
+PHENOFILE="$PCA_COVAR"
+TRAITTYPE="$TRAIT_TYPE"
+INVNORMALISE="$INV_NORMALISE"
+PHENOCOL="$PHENOCOL"
+COVARCOLLIST="$COVAR_COLLIST"
+CATEGCOVARCOLLIST="$CATEG_COVAR_COLLIST"
+SAMPLEIDCOL="$SAMPLE_ID_COL"
+TOL="$TOL"
+SAMPLEIDS="$SAMPLEIDS"
 
 step1_fitNULLGLMM.R \
       --plinkFile="${GENOTYPE_PLINK}" \
       --relatednessCutoff=0.05 \
       --sparseGRMFile=${SPARSE_GRM} \
-      --sparseGRMSampleIDFile=${SPARSE_GRM}.sampleIDs.txt \
+      --sparseGRMSampleIDFile=${SPARSE_GRM_IDS} \
       --useSparseGRMtoFitNULL=TRUE \
       --phenoFile=${PHENOFILE} \
       --skipVarianceRatioEstimation=FALSE \
@@ -38,4 +35,4 @@ step1_fitNULLGLMM.R \
       --isCateVarianceRatio=TRUE \
       --tol=${TOL} \
       --SampleIDIncludeFile=${SAMPLEIDS} \
-      --isCovariateOffset=FALSE
+      --isCovariateOffset=TRUE
