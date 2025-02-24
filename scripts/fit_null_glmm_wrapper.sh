@@ -38,4 +38,4 @@ step1_fitNULLGLMM.R \
       --isCateVarianceRatio=TRUE \
       --tol=${TOL} \
       --SampleIDIncludeFile=${SAMPLEIDS} \
-      --isCovariateOffset=TRUE
+      --isCovariateOffset=FALSE

@@ -6,7 +6,6 @@ json: "pilot_phenotypes_updated.json"
 phenotype_code:
         - "Height" 
         - "HbA1c" 
-        - "T2Diab"
         - "ColonRectCanc" 
 phenotype_file: "allofus_covariates_hba1c_height_t2d_crc.tsv"
 covariates_file: "allofus_covariates_hba1c_height_t2d_crc.tsv"
@@ -15,7 +14,11 @@ sampleidcol: "person_id"
 # SAIGE OPTIONS
 
 ## Step 1 fit nullGLMM
-covarcollist: "age,age2,age_sex,age2_sex,sex,PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PC11,PC12,PC13,PC14,PC15,PC16,PC17,PC18,PC19,PC20"
+#covarcollist: "age,age2,age_sex,age2_sex,sex,PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PC11,PC12,PC13,PC14,PC15,PC16,PC17,PC18,PC19,PC20"
+# testing colinearity issue?
+covarcollist: "sex"
 categcovarcollist: "sex"
 n_threads_step_one: 4
 
+## Step 2 SPA tests
+min_mac: 0.5
