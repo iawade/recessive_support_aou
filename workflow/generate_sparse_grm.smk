@@ -229,13 +229,13 @@ rule fitnullglmm:
         SAMPLE_IDS="{input[3]}"
 
         # Upload input files to the cloud
-        gsutil -u $GOOGLE_PROJECT  cp $BED $WORKSPACE_BUCKET/data/saige/run/nullglmm/
-        gsutil -u $GOOGLE_PROJECT cp $BIM $WORKSPACE_BUCKET/data/saige/run/nullglmm/
-        gsutil -u $GOOGLE_PROJECT cp $FAM $WORKSPACE_BUCKET/data/saige/run/nullglmm/
-        gsutil -u $GOOGLE_PROJECT cp $PCA_COVAR $WORKSPACE_BUCKET/data/saige/run/nullglmm/
-        gsutil -u $GOOGLE_PROJECT cp $GRM $WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/
-        gsutil -u $GOOGLE_PROJECT cp $GRM.sampleIDs.txt $WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/
-        gsutil -u $GOOGLE_PROJECT cp $SAMPLE_IDS $WORKSPACE_BUCKET/data/saige/run/nullglmm/
+        gsutil -u $GOOGLE_PROJECT  cp -n $BED $WORKSPACE_BUCKET/data/saige/run/nullglmm/
+        gsutil -u $GOOGLE_PROJECT cp -n $BIM $WORKSPACE_BUCKET/data/saige/run/nullglmm/
+        gsutil -u $GOOGLE_PROJECT cp -n $FAM $WORKSPACE_BUCKET/data/saige/run/nullglmm/
+        gsutil -u $GOOGLE_PROJECT cp -n $PCA_COVAR $WORKSPACE_BUCKET/data/saige/run/nullglmm/
+        gsutil -u $GOOGLE_PROJECT cp -n $GRM $WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/
+        gsutil -u $GOOGLE_PROJECT cp -n $GRM.sampleIDs.txt $WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/
+        gsutil -u $GOOGLE_PROJECT cp -n $SAMPLE_IDS $WORKSPACE_BUCKET/data/saige/run/nullglmm/
 	gsutil -u $GOOGLE_PROJECT cp scripts/fit_null_glmm_wrapper_dsub.sh $WORKSPACE_BUCKET/data/saige/run/scripts/
         
 	echo "{params.phenotype_code}"

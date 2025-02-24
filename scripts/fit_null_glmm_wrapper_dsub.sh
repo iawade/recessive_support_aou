@@ -15,24 +15,24 @@ SAMPLEIDCOL="$SAMPLE_ID_COL"
 TOL="$TOL"
 SAMPLEIDS="$SAMPLEIDS"
 
-step1_fitNULLGLMM.R \
+Rscript /usr/local/bin/step1_fitNULLGLMM.R \
       --plinkFile="${GENOTYPE_PLINK}" \
       --relatednessCutoff=0.05 \
       --sparseGRMFile=${SPARSE_GRM} \
       --sparseGRMSampleIDFile=${SPARSE_GRM_IDS} \
       --useSparseGRMtoFitNULL=TRUE \
       --phenoFile=${PHENOFILE} \
-      --skipVarianceRatioEstimation=FALSE \
+      --skipVarianceRatioEstimation FALSE \
       --traitType=${TRAITTYPE} \
       --invNormalize=${INVNORMALISE} \
-      --phenoCol=""${PHENOCOL}"" \
-      --covarColList=""${COVARCOLLIST}"" \
-      --qCovarColList=""${CATEGCOVARCOLLIST}"" \
+      --phenoCol="${PHENOCOL}" \
+      --covarColList="${COVARCOLLIST}" \
+      --qCovarColList="${CATEGCOVARCOLLIST}" \
       --sampleIDColinphenoFile=${SAMPLEIDCOL} \
       --outputPrefix="${OUTPUT_PREFIX}" \
       --IsOverwriteVarianceRatioFile=TRUE \
       --nThreads=4 \
       --isCateVarianceRatio=TRUE \
       --tol=${TOL} \
-      --SampleIDIncludeFile=${SAMPLEIDS} \
-      --isCovariateOffset=TRUE
+      #--SampleIDIncludeFile=${SAMPLEIDS} \
+      #--isCovariateOffset TRUE
