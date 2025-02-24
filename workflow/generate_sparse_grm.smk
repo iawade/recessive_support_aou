@@ -2,12 +2,13 @@ configfile: "config/config.yaml"
 
 # Quick pipeline for generating sparse GRM on All of Us data (NOT using dsub)
 prune_methods = ['snp']
-# ancestries = ['afr', 'amr', 'eas', 'eur', 'mid']
+ancestries = ['afr', 'amr', 'eas', 'eur', 'mid', 'sas']
 phenotypes = config['phenotype_code'] 
+CHROMS = ['chr1']
 
 # Assess chrom based on what's in vcf folder
 # could get acestries from this folder but want upstream steps to work without vcf already generated
-CHROMS, ancestries = glob_wildcards("vcf/aou.exome_split.v8.{chrom}.{ancestry}.qc.maf05.popmax05.pLoF_damaging_missense.recessive.vcf.bgz")
+# CHROMS = glob_wildcards("vcf/aou.exome_split.v8.{chrom}.eur.qc.maf05.popmax05.pLoF_damaging_missense.recessive.vcf.bgz")
 
 import json
 
@@ -123,10 +124,11 @@ rule calc_pcs:
     shell:
         """
         # Ensure the necessary files are uploaded to the cloud (if local)
-        gsutil -u $GOOGLE_PROJECT cp {input} $WORKSPACE_BUCKET/data/saige/run/ld_prune/
-        gsutil -u $GOOGLE_PROJECT cp {params.bim} $WORKSPACE_BUCKET/data/saige/run/ld_prune/
-        gsutil -u $GOOGLE_PROJECT cp {params.fam} $WORKSPACE_BUCKET/data/saige/run/ld_prune/
+        gsutil -u $GOOGLE_PROJECT cp -n {input} $WORKSPACE_BUCKET/data/saige/run/ld_prune/
+        gsutil -u $GOOGLE_PROJECT cp -n {params.bim} $WORKSPACE_BUCKET/data/saige/run/ld_prune/
+        gsutil -u $GOOGLE_PROJECT cp -n {params.fam} $WORKSPACE_BUCKET/data/saige/run/ld_prune/
         gsutil -u $GOOGLE_PROJECT cp scripts/calc_pcs_dsub.py $WORKSPACE_BUCKET/data/saige/run/scripts/
+        gsutil -u $GOOGLE_PROJECT cp -n ancestry/relatedness_flagged_samples.tsv  $WORKSPACE_BUCKET/data/saige/run/ld_prune/
 
         # Run the dsub job on Google Cloud
         source ~/aou_dsub.bash
@@ -136,6 +138,7 @@ rule calc_pcs:
             --input INPUT_BED="$WORKSPACE_BUCKET/data/saige/run/ld_prune/{wildcards.ancestry}_{wildcards.prune_method}_wise.bed" \
             --input BIM="$WORKSPACE_BUCKET/data/saige/run/ld_prune/{wildcards.ancestry}_{wildcards.prune_method}_wise.bim" \
             --input FAM="$WORKSPACE_BUCKET/data/saige/run/ld_prune/{wildcards.ancestry}_{wildcards.prune_method}_wise.fam" \
+            --input EXCLUSIONS_LIST="$WORKSPACE_BUCKET/data/saige/run/ld_prune/relatedness_flagged_samples.tsv" \
             --output OUTPUT="$WORKSPACE_BUCKET/saige/run/{output}" \
             --output OUTPUT_eigenvalues="$WORKSPACE_BUCKET/data/saige/run/{params.eigenv}" \
             --output OUTPUT_loadings="$WORKSPACE_BUCKET/data/saige/run/{params.loadings}" \
@@ -229,13 +232,13 @@ rule fitnullglmm:
         SAMPLE_IDS="{input[3]}"
 
         # Upload input files to the cloud
-        gsutil -u $GOOGLE_PROJECT  cp -n $BED $WORKSPACE_BUCKET/data/saige/run/nullglmm/
-        gsutil -u $GOOGLE_PROJECT cp -n $BIM $WORKSPACE_BUCKET/data/saige/run/nullglmm/
-        gsutil -u $GOOGLE_PROJECT cp -n $FAM $WORKSPACE_BUCKET/data/saige/run/nullglmm/
-        gsutil -u $GOOGLE_PROJECT cp -n $PCA_COVAR $WORKSPACE_BUCKET/data/saige/run/nullglmm/
-        gsutil -u $GOOGLE_PROJECT cp -n $GRM $WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/
-        gsutil -u $GOOGLE_PROJECT cp -n $GRM.sampleIDs.txt $WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/
-        gsutil -u $GOOGLE_PROJECT cp -n $SAMPLE_IDS $WORKSPACE_BUCKET/data/saige/run/nullglmm/
+        gsutil -u $GOOGLE_PROJECT  cp  $BED $WORKSPACE_BUCKET/data/saige/run/nullglmm/
+        gsutil -u $GOOGLE_PROJECT cp  $BIM $WORKSPACE_BUCKET/data/saige/run/nullglmm/
+        gsutil -u $GOOGLE_PROJECT cp  $FAM $WORKSPACE_BUCKET/data/saige/run/nullglmm/
+        gsutil -u $GOOGLE_PROJECT cp  $PCA_COVAR $WORKSPACE_BUCKET/data/saige/run/nullglmm/
+        gsutil -u $GOOGLE_PROJECT cp  $GRM $WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/
+        gsutil -u $GOOGLE_PROJECT cp  $GRM.sampleIDs.txt $WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/
+        gsutil -u $GOOGLE_PROJECT cp  $SAMPLE_IDS $WORKSPACE_BUCKET/data/saige/run/nullglmm/
 	gsutil -u $GOOGLE_PROJECT cp scripts/fit_null_glmm_wrapper_dsub.sh $WORKSPACE_BUCKET/data/saige/run/scripts/
         
 	echo "{params.phenotype_code}"

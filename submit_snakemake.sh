@@ -12,28 +12,7 @@ if [ -f "pipeline_complete.txt" ]; then
     rm -f "pipeline_complete.txt"
 fi
 
-# Log memory usage
-LOG_FILE="memory_monitor.log"
-echo "Starting memory monitoring..." > "$LOG_FILE"
-
-# Function to log memory usage
-log_memory() {
-    echo "$(date): $(free -h | grep 'Mem')" >> "$LOG_FILE"
-}
-
-# Start a background process to monitor memory every 5 seconds
-monitor_memory() {
-    while true; do
-        log_memory
-        sleep 5
-    done
-}
-
-# Start monitoring in the background
-monitor_memory &
-MONITOR_PID=$!
-
-mkdir -p ld_prune logs make_sparse_grm sample_selection PCA nullglmm
+mkdir -p ld_prune logs make_sparse_grm sample_selection PCA nullglmm spa_tests
 
 source /home/jupyter/anaconda3/etc/profile.d/conda.sh
 conda activate biallelic_effects
@@ -42,12 +21,8 @@ conda activate biallelic_effects
 echo "Starting a run of Snakemake workflow..."
 snakemake --snakefile "$WORKFLOW_FILE" --cores "$MAX_JOBS" --jobs 1 --max-status-checks-per-second 0.01 \
     --rerun-triggers mtime input \
-    --until create_plink_for_vr \
-    2>&1 | tee snakemake_run.log
+    --until create_GRM \
+    2>&1 | tee snakemake_run.log 
 
 echo "Run complete."
-
-# Stop the background memory monitor after the script finishes
-kill $MONITOR_PID
-echo "Memory monitoring stopped." >> "$LOG_FILE"
 
