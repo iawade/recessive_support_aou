@@ -105,9 +105,6 @@ rule create_GRM:
         "logs/create_sparse_grm_{ancestry}_{prune_method}.log"
     shell:
         "bash scripts/make_sparse_GRM_wrapper.sh {input} {output}"
-# TODO need to make nthreads a parameter
-
-
 
 rule calc_pcs:
     input:
@@ -135,11 +132,11 @@ rule calc_pcs:
         aou_dsub \
             --name "pcs_dsub" \
             --image "hailgenetics/hail:0.2.133-py3.10" \
-            --input INPUT_BED="$WORKSPACE_BUCKET/data/saige/run/ld_prune/{wildcards.ancestry}_{wildcards.prune_method}_wise.bed" \
-            --input BIM="$WORKSPACE_BUCKET/data/saige/run/ld_prune/{wildcards.ancestry}_{wildcards.prune_method}_wise.bim" \
-            --input FAM="$WORKSPACE_BUCKET/data/saige/run/ld_prune/{wildcards.ancestry}_{wildcards.prune_method}_wise.fam" \
+            --input INPUT_BED="$WORKSPACE_BUCKET/data/saige/run/ld_prune/allofus_array_{wildcards.ancestry}_{wildcards.prune_method}_wise.bed" \
+            --input BIM="$WORKSPACE_BUCKET/data/saige/run/ld_prune/allofus_array_{wildcards.ancestry}_{wildcards.prune_method}_wise.bim" \
+            --input FAM="$WORKSPACE_BUCKET/data/saige/run/ld_prune/allofus_array_{wildcards.ancestry}_{wildcards.prune_method}_wise.fam" \
             --input EXCLUSIONS_LIST="$WORKSPACE_BUCKET/data/saige/run/ld_prune/relatedness_flagged_samples.tsv" \
-            --output OUTPUT="$WORKSPACE_BUCKET/saige/run/{output}" \
+            --output OUTPUT="$WORKSPACE_BUCKET/data/saige/run/{output}" \
             --output OUTPUT_eigenvalues="$WORKSPACE_BUCKET/data/saige/run/{params.eigenv}" \
             --output OUTPUT_loadings="$WORKSPACE_BUCKET/data/saige/run/{params.loadings}" \
             --script "$WORKSPACE_BUCKET/data/saige/run/scripts/calc_pcs_dsub.py" \
@@ -152,10 +149,11 @@ rule calc_pcs:
             --env "SPARK_EXECUTOR_MEMORY=64g" \
             --env "SPARK_DRIVER_EXTRA_JAVA_OPTIONS=-Xmx32g" \
             --env "SPARK_EXECUTOR_EXTRA_JAVA_OPTIONS=-Xmx64g" \
+            --timeout 2d \
 	    --wait
 
         # Download the result files from Google Cloud
-        gsutil -u $GOOGLE_PROJECT cp $WORKSPACE_BUCKET/saige/run/{output} {output}
+        gsutil -u $GOOGLE_PROJECT cp $WORKSPACE_BUCKET/data/saige/run/{output} {output}
         gsutil -u $GOOGLE_PROJECT cp $WORKSPACE_BUCKET/data/saige/run/{params.eigenv} {params.eigenv}
         gsutil -u $GOOGLE_PROJECT cp $WORKSPACE_BUCKET/data/saige/run/{params.loadings} {params.loadings}
         """
@@ -178,28 +176,6 @@ rule combine_covars:
         # Assuming `person_id` is the identifier in your covariates file and this matches `sample_id`
         cut -d "," -f1 {output[0]} > {output[1]}  # Save sample IDs to a text file
         """
-
-#rule fitnullglmm:
-#    input:
-#        "nullglmm/allofus_array_{ancestry}_for_vr.bed",
-#        "nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}.csv",
-#        "make_sparse_grm/allofus_array_{ancestry}_{prune_method}_wise_relatednessCutoff_0.05_5000_randomMarkersUsed.sparseGRM.mtx",
-#        "nullglmm/sample_ids_{ancestry}_{prune_method}_{phenotype_code}.txt"  # The file with sample_ids
-#    output:
-#        "nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}.varianceRatio.txt"
-#	"nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}.rda"
-#    params:
-#        covarcollist=config["covarcollist"],
-#        categcovarcollist=config["categcovarcollist"],
-#        sampleidcol=config["sampleidcol"],
-#        n_threads=config["n_threads_step_one"],
-#        trait_type=lambda wildcards: trait_type[wildcards.phenotype_code],   # Extract the correct trait type
-#        invnormalise=lambda wildcards: invnormalise[wildcards.phenotype_code],  # Extract invnormalise value
-#        tol=lambda wildcards: tol[wildcards.phenotype_code]   # Extract the correct tol value
-#    shell:
-#        """
-#        bash scripts/fit_null_glmm_wrapper.sh {input[0]} {output[0]} {input[2]} {input[1]} {params.trait_type} {params.invnormalise} {wildcards.phenotype_code} {params.covarcollist} {params.categcovarcollist} {params.sampleidcol} {params.tol} {input[3]}
-#        """
 
 rule fitnullglmm:
     input:

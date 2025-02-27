@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the maximum number of jobs
-MAX_JOBS=1
+MAX_JOBS=$(nproc)
 
 # Path to the Snakemake workflow file
 WORKFLOW_FILE="workflow/generate_sparse_grm.smk"
@@ -19,9 +19,9 @@ conda activate biallelic_effects
 
 # Run Snakemake with the specified options
 echo "Starting a run of Snakemake workflow..."
-snakemake --snakefile "$WORKFLOW_FILE" --cores "$MAX_JOBS" --jobs 1 --max-status-checks-per-second 0.01 \
+snakemake --snakefile "$WORKFLOW_FILE" --cores "$MAX_JOBS" --jobs "$MAX_JOBS" --max-status-checks-per-second 0.01 \
     --rerun-triggers mtime input \
-    --until create_GRM \
+    --until calc_pcs \
     2>&1 | tee snakemake_run.log 
 
 echo "Run complete."
