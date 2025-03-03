@@ -177,7 +177,6 @@ bplot_final
 
 # In[11]:
 
-
-pid_summary = pid_level_summary([3006923], df_trimmed_dropped)
+pid_summary = pid_level_summary([3004410], df_trimmed_dropped)
 pid_summary.head()
 

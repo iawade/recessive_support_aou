@@ -15,7 +15,9 @@ calculated_pm_df = pd.read_gbq(f'''SELECT DISTINCT person_id, measurement_source
                                                                             , 'hip-circumference-mean'
                                                                             , 'heart-rate-mean'
                                                                             , 'blood-pressure-diastolic-mean'
-                                                                            , 'blood-pressure-systolic-mean')''')
+                                                                            , 'blood-pressure-systolic-mean'
+                                                                            , 'BMI'
+                                                                            , 'WHRadjBMI')''')
 #pm_df = calculated_pm_df.pivot(index = ['person_id'], columns = 'measurement_source_value'
 #                        , values= 'value_as_number').reset_index()
 

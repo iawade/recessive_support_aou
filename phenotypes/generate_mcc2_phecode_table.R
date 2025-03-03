@@ -51,7 +51,7 @@ phecode$schema = c(
     bigquery$SchemaField('concept_code', 'STRING'),
     bigquery$SchemaField('phecode', 'STRING')
 )
-#py_set_attr(phecode$options,"skip_leading_rows", "1")  # optionally skip header row
+py_set_attr(phecode$options,"skip_leading_rows", "1")  # optionally skip header row
 
 icds=sprintf("with all_codes as (select * from (
     select distinct person_id, vocabulary_id, concept_code, condition_start_date as date

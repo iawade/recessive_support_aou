@@ -143,13 +143,12 @@ rule calc_pcs:
             --logging "$WORKSPACE_BUCKET/data/saige/run/logging" \
             --disk-size 2000 \
             --boot-disk-size 50 \
-            --min-ram 128 \
-            --min-cores 32 \
-            --env "SPARK_DRIVER_MEMORY=32g" \
-            --env "SPARK_EXECUTOR_MEMORY=64g" \
-            --env "SPARK_DRIVER_EXTRA_JAVA_OPTIONS=-Xmx32g" \
-            --env "SPARK_EXECUTOR_EXTRA_JAVA_OPTIONS=-Xmx64g" \
-            --timeout 2d \
+            --min-ram 256 \
+            --min-cores 64 \
+            --env "SPARK_DRIVER_MEMORY=64g" \
+            --env "SPARK_EXECUTOR_MEMORY=128g" \
+            --env "SPARK_DRIVER_EXTRA_JAVA_OPTIONS=-Xmx64g" \
+            --env "SPARK_EXECUTOR_EXTRA_JAVA_OPTIONS=-Xmx128g" \
 	    --wait
 
         # Download the result files from Google Cloud
