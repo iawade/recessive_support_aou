@@ -2,13 +2,9 @@
 
 # MAIN OPTIONS
 workdir: "/home/jupyter/workspaces/duplicateofbialleliceffectsincomplextraitsacrossbiobanksiw/sparse_grm"
-json: "pilot_phenotypes_updated.json"
-phenotype_code:
-        - "Height" 
-        - "HbA1c" 
-        - "ColonRectCanc" 
-phenotype_file: "allofus_covariates_hba1c_height_t2d_crc.tsv"
-covariates_file: "allofus_covariates_hba1c_height_t2d_crc.tsv"
+json: "pilot_phenotypes_with_phecode.json"
+phenotype_file: "combined_data.csv"
+covariates_file: "combined_data.csv"
 sampleidcol: "person_id"
 
 # SAIGE OPTIONS

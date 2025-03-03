@@ -5,6 +5,7 @@ import sys
 covariates_file = sys.argv[1]  # Now contains both covariates and phenotypes
 pcs_file = sys.argv[2]
 output_file = sys.argv[3]
+sex_specific_run = sys.argv[4]  # New argument for filtering (Male/Female)
 
 # Step 2: Load datasets
 covariates = pd.read_csv(covariates_file, dtype=str, sep="\t")
@@ -32,16 +33,27 @@ for df_name, df in zip(["Covariates+Phenotypes", "PCS"], [covariates, pcs]):
         print(f"\n[ERROR] 'person_id' column not found in {df_name}!")
         print(f"Columns in {df_name}: {df.columns.tolist()}")
 
-# Step 6: Perform strict inner join
+# Step 6: Apply sex-specific filtering if required
+if sex_specific_run == "Male":
+    print(f"\n[DEBUG] Filtering for Male (sex == 0)")
+    covariates = covariates[covariates["sex"] == "0"]  # Filter males (0)
+elif sex_specific_run == "Female":
+    print(f"\n[DEBUG] Filtering for Female (sex == 1)")
+    covariates = covariates[covariates["sex"] == "1"]  # Filter females (1)
+else:
+    print(f"\n[DEBUG] No sex-specific filtering applied.")
+
+# Step 7: Perform strict inner join
 merged = covariates.merge(pcs, on="person_id", how="inner")
 
 print("\n[DEBUG] First 3 rows of merged DataFrame:")
 print(merged.head(3))
 
-# Step 7: Handle missing values dynamically
+# Step 8: Handle missing values dynamically
 for col in merged.columns:
     merged[col].fillna("", inplace=True)
 
-# Step 8: Write the final output file
+# Step 9: Write the final output file
 merged.to_csv(output_file, index=False)
 print(f"\nFinal merged data written to: {output_file}")
+

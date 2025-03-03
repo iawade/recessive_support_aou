@@ -3,7 +3,6 @@ configfile: "config/config.yaml"
 # Quick pipeline for generating sparse GRM on All of Us data (NOT using dsub)
 prune_methods = ['snp']
 ancestries = ['afr', 'amr', 'eas', 'eur', 'mid', 'sas']
-phenotypes = config['phenotype_code'] 
 CHROMS = ['chr1']
 
 # Assess chrom based on what's in vcf folder
@@ -16,28 +15,56 @@ import json
 with open(config["json"]) as f:
     phenotype_data = json.load(f)
 
-# Access the values for each phenotype_code from the JSON
-phenotype_list = []
+# Initialize dictionary to store phenotype metadata
+phenotype_metadata = {}
 
-for pheno_code in phenotypes:  # Use the newly defined `phenotypes`
-    match = next((item for item in phenotype_data if item["phenotype_ID"] == pheno_code), None)
-    if match:
-        phenotype_list.append(match)
+# Initialize a set to store unique phecodes (for later use in workflow)
+phenotypes = set()
+
+# Iterate over each entry in the phenotype data
+for entry in phenotype_data:
+    # Extract the necessary fields
+    phenotype_id = entry["phenotype_ID"]
+    trait_type = entry["trait_type"]
+    invnormalise = entry["invnormalise"]
+    tol = entry["tol"]
+    sex_specific_run = entry["sex_specific_run"]
+    
+    # Get phecode and ensure it's a string before splitting
+    phecode = entry.get("phecode", "")
+    if phecode:
+        # Convert phecode to a string and split if it's comma-separated
+        phecodes = str(phecode).split(", ")
     else:
-        print(f"Warning: Phenotype ID '{pheno_code}' not found in JSON.")
+        phecodes = []
 
-# Now process all phenotypes
-# Example of handling each phenotype's details
-trait_type = {p["phenotype_ID"]: p["trait_type"] for p in phenotype_list}
-invnormalise = {p["phenotype_ID"]: p["invnormalise"] for p in phenotype_list}
-tol = {p["phenotype_ID"]: p["tol"] for p in phenotype_list}
+    # Process each phecode
+    for phecode_str in phecodes:
+        # Add the phecode to the set of unique phecodes
+        phenotypes.add(phecode_str)
+        
+        # Store metadata for each phecode
+        phenotype_metadata[phecode_str] = {
+            "phenotype_ID": phenotype_id,
+            "trait_type": trait_type,
+            "invnormalise": invnormalise,
+            "tol": tol,
+            "sex_specific_run": sex_specific_run
+        }
+
+# Convert phenotypes to a sorted list for consistency
+phenotypes = sorted(phenotypes)
+
+# Now phenotype_metadata contains all the metadata for each phecode
+print(f"Loaded {len(phenotype_metadata)} unique phecodes with metadata.")
+print(phenotypes)
 
 # Target Rule for Completion of Pipeline
 rule all:
     input:
         "removed_array_data.txt",
         expand(
-		"spatests/aou_{prune_method}_{ancestry}_{phenotype_code}_{chrom}.txt",
+		"spatests/aou_{prune_method}_{ancestry}_step2_{phenotype_code}_{chrom}.txt",
             	ancestry=ancestries, 
             	prune_method=prune_methods, 
             	phenotype_code=phenotypes,
@@ -64,8 +91,6 @@ rule filter_and_split_ancestry:
         "sample_selection/{ancestry}.tsv"
     output:
         "sample_selection/allofus_array_{ancestry}.bed"
-    log:
-        "logs/filter_ancestry_{ancestry}.log" 
     shell:
         "bash scripts/filter_ancestry.sh ancestry/arrays {input[1]} {output}"
 
@@ -166,10 +191,11 @@ rule combine_covars:
     params:
         #phenotype_code=config["phenotype_code"],
         phenotype_file=config["phenotype_file"],
-        covariates_file=config["covariates_file"]
+        covariates_file=config["covariates_file"],
+        sex_specific_run=lambda wildcards: phenotype_metadata[wildcards.phenotype_code]["sex_specific_run"]
     shell:
         """
-        python scripts/combine_pheno_and_covars.py {params.phenotype_file} {input} {output[0]}
+        python scripts/combine_pheno_and_covars.py {params.phenotype_file} {input} {output[0]} {params.sex_specific_run}
 
         # Extract the sample_ids (those with phenotype data and correct ancestry)
         # Assuming `person_id` is the identifier in your covariates file and this matches `sample_id`
@@ -193,9 +219,12 @@ rule fitnullglmm:
         sampleidcol=config["sampleidcol"],
         n_threads=config["n_threads_step_one"],
         phenotype_code=lambda wildcards: f"{wildcards.phenotype_code}",
-        trait_type=lambda wildcards: trait_type[wildcards.phenotype_code],   # Extract the correct trait type
-        invnormalise=lambda wildcards: invnormalise[wildcards.phenotype_code],  # Extract invnormalise value
-        tol=lambda wildcards: tol[wildcards.phenotype_code]   # Extract the correct tol value
+        trait_type=lambda wildcards: phenotype_metadata[wildcards.phenotype_code]["trait_type"],
+        invnormalise=lambda wildcards: phenotype_metadata[wildcards.phenotype_code]["invnormalise"],
+        tol=lambda wildcards: phenotype_metadata[wildcards.phenotype_code]["tol"],
+        # trait_type=lambda wildcards: trait_type[wildcards.phenotype_code],   # Extract the correct trait type
+        # invnormalise=lambda wildcards: invnormalise[wildcards.phenotype_code],  # Extract invnormalise value
+        # tol=lambda wildcards: tol[wildcards.phenotype_code]   # Extract the correct tol value
     shell:
         """
 	# Define filenames
@@ -258,7 +287,7 @@ rule spatests:
         "make_sparse_grm/allofus_array_{ancestry}_{prune_method}_wise_relatednessCutoff_0.05_5000_randomMarkersUsed.sparseGRM.mtx",
         "nullglmm/sample_ids_{ancestry}_{prune_method}_{phenotype_code}.txt"  # The file with sample_ids
     output:
-        "spatests/aou_{prune_method}_{ancestry}_{phenotype_code}_{chrom}.txt"
+        "spatests/aou_{prune_method}_{ancestry}_step2_{phenotype_code}_{chrom}.txt"
     params:
         min_mac=config["min_mac"],
     shell:
@@ -286,7 +315,7 @@ rule spatests:
             --input GRM="$WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/allofus_array_{wildcards.ancestry}_{wildcards.prune_method}_wise_relatednessCutoff_0.05_5000_randomMarkersUsed.sparseGRM.mtx" \
             --input GRM_IDS="$WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/allofus_array_{wildcards.ancestry}_{wildcards.prune_method}_wise_relatednessCutoff_0.05_5000_randomMarkersUsed.sparseGRM.mtx.sampleIDs.txt" \
             --input SAMPLE_IDS="$WORKSPACE_BUCKET/data/saige/run/nullglmm/sample_ids_{wildcards.ancestry}_{wildcards.prune_method}_{wildcards.phenotype_code}.txt" \
-            --output OUTPUT="$WORKSPACE_BUCKET/data/saige/run/spatests/aou_{wildcards.prune_method}_{wildcards.ancestry}_{wildcards.phenotype_code}_{wildcards.chrom}.txt" \
+            --output OUTPUT="$WORKSPACE_BUCKET/data/saige/run/spatests/aou_{wildcards.prune_method}_{wildcards.ancestry}_step2_{wildcards.phenotype_code}_{wildcards.chrom}.txt" \
             --env MIN_MAC="{params.min_mac}" \
             --env CHROM="{wildcards.chrom}" \
             --script "$WORKSPACE_BUCKET/data/saige/run/scripts/spa_tests_wrapper_dsub.sh" \
@@ -296,7 +325,7 @@ rule spatests:
             --wait
 
         # Download the output files
-        gsutil -u $GOOGLE_PROJECT  cp $WORKSPACE_BUCKET/data/saige/run/spatests/aou_{wildcards.prune_method}_{wildcards.ancestry}_{wildcards.phenotype_code}_{wildcards.chrom}.txt {output}
+        gsutil -u $GOOGLE_PROJECT  cp $WORKSPACE_BUCKET/data/saige/run/spatests/aou_{wildcards.prune_method}_{wildcards.ancestry}_step2_{wildcards.phenotype_code}_{wildcards.chrom}.txt {output}
 
         """
 
