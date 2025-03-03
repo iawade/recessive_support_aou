@@ -6,6 +6,12 @@ json: "pilot_phenotypes_with_phecode.json"
 phenotype_file: "combined_data.csv"
 covariates_file: "combined_data.csv"
 sampleidcol: "person_id"
+phenotype_codes:
+        - "ILDSarc"
+        - "Asth"
+        - "LDLC"
+        - "ALT"
+
 
 # SAIGE OPTIONS
 
