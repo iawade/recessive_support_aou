@@ -2,15 +2,12 @@
 
 # MAIN OPTIONS
 workdir: "/home/jupyter/workspaces/duplicateofbialleliceffectsincomplextraitsacrossbiobanksiw/sparse_grm"
-json: "pilot_phenotypes_with_phecode.json"
-phenotype_file: "combined_data.csv"
-covariates_file: "combined_data.csv"
+json: "updated_pilot_phenotypes_with_phecode.json"
+phenotype_file: "updated_combined_data.csv"
+covariates_file: "updated_combined_data.csv"
 sampleidcol: "person_id"
 phenotype_codes:
-        - "ILDSarc"
         - "Asth"
-        - "LDLC"
-        - "ALT"
 
 
 # SAIGE OPTIONS

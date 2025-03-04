@@ -244,13 +244,13 @@ rule fitnullglmm:
         SAMPLE_IDS="{input[3]}"
 
         # Upload input files to the cloud
-        gsutil -u $GOOGLE_PROJECT  cp  $BED $WORKSPACE_BUCKET/data/saige/run/nullglmm/
-        gsutil -u $GOOGLE_PROJECT cp  $BIM $WORKSPACE_BUCKET/data/saige/run/nullglmm/
-        gsutil -u $GOOGLE_PROJECT cp  $FAM $WORKSPACE_BUCKET/data/saige/run/nullglmm/
+        gsutil -u $GOOGLE_PROJECT  cp -n  $BED $WORKSPACE_BUCKET/data/saige/run/nullglmm/
+        gsutil -u $GOOGLE_PROJECT cp -n  $BIM $WORKSPACE_BUCKET/data/saige/run/nullglmm/
+        gsutil -u $GOOGLE_PROJECT cp -n  $FAM $WORKSPACE_BUCKET/data/saige/run/nullglmm/
         gsutil -u $GOOGLE_PROJECT cp  $PCA_COVAR $WORKSPACE_BUCKET/data/saige/run/nullglmm/
-        gsutil -u $GOOGLE_PROJECT cp  $GRM $WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/
-        gsutil -u $GOOGLE_PROJECT cp  $GRM.sampleIDs.txt $WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/
-        gsutil -u $GOOGLE_PROJECT cp  $SAMPLE_IDS $WORKSPACE_BUCKET/data/saige/run/nullglmm/
+        gsutil -u $GOOGLE_PROJECT cp -n  $GRM $WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/
+        gsutil -u $GOOGLE_PROJECT cp -n  $GRM.sampleIDs.txt $WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/
+        gsutil -u $GOOGLE_PROJECT cp -n  $SAMPLE_IDS $WORKSPACE_BUCKET/data/saige/run/nullglmm/
 	gsutil -u $GOOGLE_PROJECT cp scripts/fit_null_glmm_wrapper_dsub.sh $WORKSPACE_BUCKET/data/saige/run/scripts/
         
 	echo "{params.phenotype_code}"
@@ -289,7 +289,7 @@ rule fitnullglmm:
 
 rule spatests:
     input:
-        "vcf/aou.exome_split.v8.{ancestry}.qced.autosomes.maf05.popmax05.pLoF_damaging_missense.recessive.vcf.bgz",
+        "vcf/aou.exome_split.v8.{ancestry}.qced.autosomes.maf05.popmax05.nonsynonymous.recessive.vcf.bgz",
 	"nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}.rda",
 	"nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}.varianceRatio.txt",
         "make_sparse_grm/allofus_array_{ancestry}_{prune_method}_wise_relatednessCutoff_0.05_5000_randomMarkersUsed.sparseGRM.mtx",
@@ -308,8 +308,8 @@ rule spatests:
         SAMPLE_IDS="{input[4]}"
 
         # Upload input files to the cloud
-        gsutil -u $GOOGLE_PROJECT  cp $VCF $WORKSPACE_BUCKET/data/saige/run/spatests/vcf/
-        gsutil -u $GOOGLE_PROJECT cp $VCF.csi $WORKSPACE_BUCKET/data/saige/run/spatests/vcf/
+        gsutil -u $GOOGLE_PROJECT  cp -n $VCF $WORKSPACE_BUCKET/data/saige/run/spatests/vcf/
+        gsutil -u $GOOGLE_PROJECT cp -n $VCF.csi $WORKSPACE_BUCKET/data/saige/run/spatests/vcf/
         gsutil -u $GOOGLE_PROJECT cp scripts/spa_tests_wrapper_dsub.sh $WORKSPACE_BUCKET/data/saige/run/scripts/
 
         source ~/aou_dsub.bash
@@ -323,7 +323,7 @@ rule spatests:
             --input GRM="$WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/allofus_array_{wildcards.ancestry}_{wildcards.prune_method}_wise_relatednessCutoff_0.05_5000_randomMarkersUsed.sparseGRM.mtx" \
             --input GRM_IDS="$WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/allofus_array_{wildcards.ancestry}_{wildcards.prune_method}_wise_relatednessCutoff_0.05_5000_randomMarkersUsed.sparseGRM.mtx.sampleIDs.txt" \
             --input SAMPLE_IDS="$WORKSPACE_BUCKET/data/saige/run/nullglmm/sample_ids_{wildcards.ancestry}_{wildcards.prune_method}_{wildcards.phenotype_code}.txt" \
-            --output OUTPUT="$WORKSPACE_BUCKET/data/saige/run/spatests/aou_{wildcards.prune_method}_{wildcards.ancestry}_step2_{wildcards.phenotype_code}_{wildcards.chrom}.txt" \
+            --output OUTPUT="$WORKSPACE_BUCKET/data/saige/run/spatests/aou_{wildcards.prune_method}_{wildcards.ancestry}_step2_{wildcards.phenotype_code}.txt" \
             --env MIN_MAC="{params.min_mac}" \
             --script "$WORKSPACE_BUCKET/data/saige/run/scripts/spa_tests_wrapper_dsub.sh" \
             --logging "$WORKSPACE_BUCKET/data/saige/run/logging" \

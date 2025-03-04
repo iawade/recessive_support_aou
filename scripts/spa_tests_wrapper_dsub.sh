@@ -3,7 +3,6 @@
 # Input and output variables
 VCF=$VCF
 OUT="$OUTPUT"
-CHR="$CHROM"
 MIN_MAC="$MIN_MAC"
 MODELFILE="$MODELFILE"
 VARIANCERATIO="$VARIANCE_RATIO"
@@ -15,7 +14,6 @@ step2_SPAtests.R \
         --vcfFile=${VCF} \
         --vcfFileIndex="${VCF}.csi"\
         --vcfField="DS" \
-        --chrom="$CHR" \
         --minMAF=0 \
         --minMAC=${MIN_MAC} \
         --GMMATmodelFile=${MODELFILE} \
@@ -32,5 +30,6 @@ step2_SPAtests.R \
         --SAIGEOutputFile=${OUT} \
         --dosage_zerod_MAC_cutoff=0 \
         --dosage_zerod_cutoff=0 \
-        --dosage_zerod_MAC_cutoff=0 
+        --dosage_zerod_MAC_cutoff=0 \
+	--chrom=chr1
 

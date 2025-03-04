@@ -8,7 +8,9 @@ SPARSE_GRM_IDS="$GRM_IDS"
 PHENOFILE="$PCA_COVAR"
 TRAITTYPE="$TRAIT_TYPE"
 INVNORMALISE="$INV_NORMALISE"
+
 PHENOCOL="$PHENOCOL"
+
 COVARCOLLIST="$COVAR_COLLIST"
 CATEGCOVARCOLLIST="$CATEG_COVAR_COLLIST"
 SAMPLEIDCOL="$SAMPLE_ID_COL"
@@ -25,7 +27,7 @@ Rscript /usr/local/bin/step1_fitNULLGLMM.R \
       --skipVarianceRatioEstimation FALSE \
       --traitType=${TRAITTYPE} \
       --invNormalize=${INVNORMALISE} \
-      --phenoCol="${PHENOCOL}" \
+      --phenoCol=${PHENOCOL} \
       --covarColList="${COVARCOLLIST}" \
       --qCovarColList="${CATEGCOVARCOLLIST}" \
       --sampleIDColinphenoFile=${SAMPLEIDCOL} \
