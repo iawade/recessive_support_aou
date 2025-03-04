@@ -3,11 +3,12 @@ configfile: "config/config.yaml"
 # Quick pipeline for generating sparse GRM on All of Us data (NOT using dsub)
 prune_methods = ['snp']
 #ancestries = ['afr', 'amr', 'eas', 'eur', 'mid', 'sas']\
-ancestries = ['eur']
+#ancestries = ['eur']
 
 # Assess chrom based on what's in vcf folder
-# could get acestries from this folder but want upstream steps to work without vcf already generated
-# CHROMS = glob_wildcards("vcf/aou.exome_split.v8.{chrom}.eur.qc.maf05.popmax05.pLoF_damaging_missense.recessive.vcf.bgz")
+ancestries, VARIANT_CLASS = glob_wildcards("vcf/aou.exome_split.v8.{ancestry}.qced.autosomes.maf05.popmax05.{variant_class}.recessive.vcf.bgz")
+print(f"Variant Classes present: {VARIANT_CLASS}")
+print(f"Ancestries present: {ancestries}")
 
 import json
 
@@ -73,10 +74,11 @@ rule all:
     input:
         "removed_array_data.txt",
         expand(
-		"spatests/aou_{prune_method}_{ancestry}_step2_{phenotype_code}.txt",
+		"spatests/aou_{prune_method}_{ancestry}_step2_{phenotype_code}_vars_{variant_class}.txt",
             	ancestry=ancestries, 
             	prune_method=prune_methods, 
             	phenotype_code=phenotypes,
+                variant_class=VARIANT_CLASS
         )
     output:
         "pipeline_complete.txt"
@@ -289,13 +291,13 @@ rule fitnullglmm:
 
 rule spatests:
     input:
-        "vcf/aou.exome_split.v8.{ancestry}.qced.autosomes.maf05.popmax05.nonsynonymous.recessive.vcf.bgz",
+        "vcf/aou.exome_split.v8.{ancestry}.qced.autosomes.maf05.popmax05.{variant_class}.recessive.vcf.bgz",
 	"nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}.rda",
 	"nullglmm/allofus_array_{ancestry}_{prune_method}_wise_pca_covariates_{phenotype_code}.varianceRatio.txt",
         "make_sparse_grm/allofus_array_{ancestry}_{prune_method}_wise_relatednessCutoff_0.05_5000_randomMarkersUsed.sparseGRM.mtx",
         "nullglmm/sample_ids_{ancestry}_{prune_method}_{phenotype_code}.txt"  # The file with sample_ids
     output:
-        "spatests/aou_{prune_method}_{ancestry}_step2_{phenotype_code}.txt"
+        "spatests/aou_{prune_method}_{ancestry}_step2_{phenotype_code}_vars_{variant_class}.txt"
     params:
         min_mac=config["min_mac"],
     shell:
@@ -323,7 +325,7 @@ rule spatests:
             --input GRM="$WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/allofus_array_{wildcards.ancestry}_{wildcards.prune_method}_wise_relatednessCutoff_0.05_5000_randomMarkersUsed.sparseGRM.mtx" \
             --input GRM_IDS="$WORKSPACE_BUCKET/data/saige/run/make_sparse_grm/allofus_array_{wildcards.ancestry}_{wildcards.prune_method}_wise_relatednessCutoff_0.05_5000_randomMarkersUsed.sparseGRM.mtx.sampleIDs.txt" \
             --input SAMPLE_IDS="$WORKSPACE_BUCKET/data/saige/run/nullglmm/sample_ids_{wildcards.ancestry}_{wildcards.prune_method}_{wildcards.phenotype_code}.txt" \
-            --output OUTPUT="$WORKSPACE_BUCKET/data/saige/run/spatests/aou_{wildcards.prune_method}_{wildcards.ancestry}_step2_{wildcards.phenotype_code}.txt" \
+            --output OUTPUT="$WORKSPACE_BUCKET/data/saige/run/spatests/aou_{wildcards.prune_method}_{wildcards.ancestry}_step2_{wildcards.phenotype_code}_vars_{wildcards.variant_class}.txt" \
             --env MIN_MAC="{params.min_mac}" \
             --script "$WORKSPACE_BUCKET/data/saige/run/scripts/spa_tests_wrapper_dsub.sh" \
             --logging "$WORKSPACE_BUCKET/data/saige/run/logging" \
@@ -332,7 +334,7 @@ rule spatests:
             --wait
 
         # Download the output files
-        gsutil -u $GOOGLE_PROJECT  cp $WORKSPACE_BUCKET/data/saige/run/spatests/aou_{wildcards.prune_method}_{wildcards.ancestry}_step2_{wildcards.phenotype_code}.txt {output}
+        gsutil -u $GOOGLE_PROJECT  cp $WORKSPACE_BUCKET/data/saige/run/spatests/aou_{wildcards.prune_method}_{wildcards.ancestry}_step2_{wildcards.phenotype_code}_vars_{wildcards.variant_class}.txt {output}
 
         """
 
