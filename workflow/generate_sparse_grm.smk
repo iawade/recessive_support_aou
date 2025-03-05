@@ -3,7 +3,7 @@ configfile: "config/config.yaml"
 # Quick pipeline for generating sparse GRM on All of Us data (NOT using dsub)
 prune_methods = ['snp']
 #ancestries = ['afr', 'amr', 'eas', 'eur', 'mid', 'sas']
-ancestries = ['eur']
+ancestries = ['eur', 'amr', 'eas']
 
 # Assess chrom based on what's in vcf folder
 #ancestries, VARIANT_CLASS = glob_wildcards("vcf/aou.exome_split.v8.{ancestry}.qced.autosomes.maf05.popmax05.{variant_class}.recessive.vcf.bgz")
@@ -227,12 +227,9 @@ rule fitnullglmm:
     params:
         bim=lambda wildcards: f"nullglmm/allofus_array_{wildcards.ancestry}_for_vr.bim",
         fam=lambda wildcards: f"nullglmm/allofus_array_{wildcards.ancestry}_for_vr.fam",
-        covarcollist=lambda wildcards: ",".join(
-            filter(lambda x: x != "sex", config["covarcollist"])
-        ) if phenotype_metadata[wildcards.phenotype_code]["sex_specific_run"] in ["Male", "Female"]
-        else config["covarcollist"],
-        qcovarcollist=lambda wildcards: "" if phenotype_metadata[wildcards.phenotype_code]["sex_specific_run"] in ["Male", "Female"]
-        else config["qcovarcollist"],
+        config["covarcollist"],
+        categcovarcollist=lambda wildcards: "" if phenotype_metadata.get(wildcards.phenotype_code, {}).get("sex_specific_run") in ["Male", "Female"]
+        else config["categcovarcollist"],
         sampleidcol=config["sampleidcol"],
         n_threads=config["n_threads_step_one"],
         phenotype_code=lambda wildcards: f"{wildcards.phenotype_code}",
@@ -241,7 +238,7 @@ rule fitnullglmm:
         tol=lambda wildcards: phenotype_metadata[wildcards.phenotype_code]["tol"],
         sex_tag=lambda wildcards: f"_{phenotype_metadata[wildcards.phenotype_code]['sex_specific_run'].lower()}" 
                  if phenotype_metadata[wildcards.phenotype_code]["sex_specific_run"] in ["Male", "Female"] else "",
-        female_flag=lambda wildcards: "--FemaleOnly=TRUE --sexCol=sex --FemaleCode=1" 
+        female_flag=lambda wildcards: '--FemaleOnly=TRUE --sexCol="sex" --FemaleCode=1' 
                  if phenotype_metadata[wildcards.phenotype_code]["sex_specific_run"] == "Female" else ""
 # TODO update so works for male-specific runs
     shell:
@@ -292,6 +289,12 @@ rule fitnullglmm:
             --logging "$WORKSPACE_BUCKET/data/saige/run/logging" \
             --disk-size 2000 \
             --boot-disk-size 50 \
+            --min-ram 16 \
+            --min-cores 4 \
+            --env "SPARK_DRIVER_MEMORY=4g" \
+            --env "SPARK_EXECUTOR_MEMORY=8g" \
+            --env "SPARK_DRIVER_EXTRA_JAVA_OPTIONS=-Xmx4g" \
+            --env "SPARK_EXECUTOR_EXTRA_JAVA_OPTIONS=-Xmx8g" \
             --wait
 
         # Download the output files
