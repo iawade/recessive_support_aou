@@ -227,7 +227,7 @@ rule fitnullglmm:
     params:
         bim=lambda wildcards: f"nullglmm/allofus_array_{wildcards.ancestry}_for_vr.bim",
         fam=lambda wildcards: f"nullglmm/allofus_array_{wildcards.ancestry}_for_vr.fam",
-        config["covarcollist"],
+        covarcollist=config["covarcollist"],
         categcovarcollist=lambda wildcards: "" if phenotype_metadata.get(wildcards.phenotype_code, {}).get("sex_specific_run") in ["Male", "Female"]
         else config["categcovarcollist"],
         sampleidcol=config["sampleidcol"],
