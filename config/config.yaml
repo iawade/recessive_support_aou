@@ -6,8 +6,7 @@ json: "updated_pilot_phenotypes_with_phecode.json"
 phenotype_file: "updated_combined_data.csv"
 covariates_file: "updated_combined_data.csv"
 sampleidcol: "person_id"
-phenotype_codes:
-        - "Asth"
+#phenotype_codes:
 
 
 # SAIGE OPTIONS

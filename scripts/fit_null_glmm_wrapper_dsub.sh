@@ -36,5 +36,6 @@ Rscript /usr/local/bin/step1_fitNULLGLMM.R \
       --nThreads=4 \
       --isCateVarianceRatio=TRUE \
       --tol=${TOL} \
+      $( [[ "$FEMALEONLY" == "TRUE" ]] && echo "--FemaleOnly=TRUE --sexCol=sex --FemaleCode=1.0" )
       #--SampleIDIncludeFile=${SAMPLEIDS} \
       #--isCovariateOffset TRUE

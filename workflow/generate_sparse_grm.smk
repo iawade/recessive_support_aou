@@ -232,9 +232,11 @@ rule fitnullglmm:
         trait_type=lambda wildcards: phenotype_metadata[wildcards.phenotype_code]["trait_type"],
         invnormalise=lambda wildcards: phenotype_metadata[wildcards.phenotype_code]["invnormalise"],
         tol=lambda wildcards: phenotype_metadata[wildcards.phenotype_code]["tol"],
-        # trait_type=lambda wildcards: trait_type[wildcards.phenotype_code],   # Extract the correct trait type
-        # invnormalise=lambda wildcards: invnormalise[wildcards.phenotype_code],  # Extract invnormalise value
-        # tol=lambda wildcards: tol[wildcards.phenotype_code]   # Extract the correct tol value
+        sex_tag=lambda wildcards: f"_{phenotype_metadata[wildcards.phenotype_code]['sex_specific_run'].lower()}" 
+                 if phenotype_metadata[wildcards.phenotype_code]["sex_specific_run"] in ["Male", "Female"] else "",
+        female_flag=lambda wildcards: "--FemaleOnly=TRUE --sexCol=sex --FemaleCode=1.0" 
+                 if phenotype_metadata[wildcards.phenotype_code]["sex_specific_run"] == "Female" else "FALSE"
+# TODO update so works for male-specific runs
     shell:
         """
 	# Define filenames
@@ -278,6 +280,7 @@ rule fitnullglmm:
             --env CATEG_COVAR_COLLIST="{params.categcovarcollist}" \
             --env SAMPLE_ID_COL="{params.sampleidcol}" \
             --env TOL="{params.tol}" \
+            --env FEMALEONLY="{params.female_flag}" \
             --script "$WORKSPACE_BUCKET/data/saige/run/scripts/fit_null_glmm_wrapper_dsub.sh" \
             --logging "$WORKSPACE_BUCKET/data/saige/run/logging" \
             --disk-size 2000 \

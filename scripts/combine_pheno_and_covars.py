@@ -39,11 +39,11 @@ for df_name, df in zip(["Covariates+Phenotypes", "PCS"], [covariates, pcs]):
 
 # Apply sex-specific filtering if required
 if sex_specific_run == "Male":
-    print(f"\n[DEBUG] Filtering for Male (sex == 0)")
-    covariates = covariates[covariates["sex"] == "0"]  # Filter males (0)
+    print(f"\n[DEBUG] Filtering for Male (sex == 0.0)")
+    covariates = covariates[covariates["sex"] == "0.0"]  # Filter males (0)
 elif sex_specific_run == "Female":
-    print(f"\n[DEBUG] Filtering for Female (sex == 1)")
-    covariates = covariates[covariates["sex"] == "1"]  # Filter females (1)
+    print(f"\n[DEBUG] Filtering for Female (sex == 1.0)")
+    covariates = covariates[covariates["sex"] == "1.0"]  # Filter females (1)
 else:
     print(f"\n[DEBUG] No sex-specific filtering applied.")
 
