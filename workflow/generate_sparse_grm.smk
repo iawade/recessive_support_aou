@@ -2,11 +2,14 @@ configfile: "config/config.yaml"
 
 # Quick pipeline for generating sparse GRM on All of Us data (NOT using dsub)
 prune_methods = ['snp']
-#ancestries = ['afr', 'amr', 'eas', 'eur', 'mid', 'sas']\
-#ancestries = ['eur']
+#ancestries = ['afr', 'amr', 'eas', 'eur', 'mid', 'sas']
+ancestries = ['eur']
 
 # Assess chrom based on what's in vcf folder
-ancestries, VARIANT_CLASS = glob_wildcards("vcf/aou.exome_split.v8.{ancestry}.qced.autosomes.maf05.popmax05.{variant_class}.recessive.vcf.bgz")
+#ancestries, VARIANT_CLASS = glob_wildcards("vcf/aou.exome_split.v8.{ancestry}.qced.autosomes.maf05.popmax05.{variant_class}.recessive.vcf.bgz")
+
+# glob wildcards behnaves differently if it globs >1 wildcard
+version, VARIANT_CLASS = glob_wildcards("vcf/aou.exome_split.{version}.eur.qced.autosomes.maf05.popmax05.{variant_class}.recessive.vcf.bgz")
 print(f"Variant Classes present: {VARIANT_CLASS}")
 print(f"Ancestries present: {ancestries}")
 
@@ -224,8 +227,12 @@ rule fitnullglmm:
     params:
         bim=lambda wildcards: f"nullglmm/allofus_array_{wildcards.ancestry}_for_vr.bim",
         fam=lambda wildcards: f"nullglmm/allofus_array_{wildcards.ancestry}_for_vr.fam",
-        covarcollist=config["covarcollist"],
-        categcovarcollist=config["categcovarcollist"],
+        covarcollist=lambda wildcards: ",".join(
+            filter(lambda x: x != "sex", config["covarcollist"])
+        ) if phenotype_metadata[wildcards.phenotype_code]["sex_specific_run"] in ["Male", "Female"]
+        else config["covarcollist"],
+        qcovarcollist=lambda wildcards: "" if phenotype_metadata[wildcards.phenotype_code]["sex_specific_run"] in ["Male", "Female"]
+        else config["qcovarcollist"],
         sampleidcol=config["sampleidcol"],
         n_threads=config["n_threads_step_one"],
         phenotype_code=lambda wildcards: f"{wildcards.phenotype_code}",
@@ -234,7 +241,7 @@ rule fitnullglmm:
         tol=lambda wildcards: phenotype_metadata[wildcards.phenotype_code]["tol"],
         sex_tag=lambda wildcards: f"_{phenotype_metadata[wildcards.phenotype_code]['sex_specific_run'].lower()}" 
                  if phenotype_metadata[wildcards.phenotype_code]["sex_specific_run"] in ["Male", "Female"] else "",
-        female_flag=lambda wildcards: "--FemaleOnly=TRUE --sexCol=sex --FemaleCode=1.0" 
+        female_flag=lambda wildcards: "--FemaleOnly=TRUE --sexCol=sex --FemaleCode=1" 
                  if phenotype_metadata[wildcards.phenotype_code]["sex_specific_run"] == "Female" else ""
 # TODO update so works for male-specific runs
     shell:

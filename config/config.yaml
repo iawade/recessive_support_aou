@@ -6,9 +6,7 @@ json: "updated_pilot_phenotypes_with_phecode.json"
 phenotype_file: "updated_combined_data.csv"
 covariates_file: "updated_combined_data.csv"
 sampleidcol: "person_id"
-phenotype_codes:
-        - "median_3027114"
-        - "median_3028288"
+#phenotype_codes:
 
 
 # SAIGE OPTIONS
