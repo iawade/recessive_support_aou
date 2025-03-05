@@ -235,7 +235,7 @@ rule fitnullglmm:
         sex_tag=lambda wildcards: f"_{phenotype_metadata[wildcards.phenotype_code]['sex_specific_run'].lower()}" 
                  if phenotype_metadata[wildcards.phenotype_code]["sex_specific_run"] in ["Male", "Female"] else "",
         female_flag=lambda wildcards: "--FemaleOnly=TRUE --sexCol=sex --FemaleCode=1.0" 
-                 if phenotype_metadata[wildcards.phenotype_code]["sex_specific_run"] == "Female" else "FALSE"
+                 if phenotype_metadata[wildcards.phenotype_code]["sex_specific_run"] == "Female" else ""
 # TODO update so works for male-specific runs
     shell:
         """

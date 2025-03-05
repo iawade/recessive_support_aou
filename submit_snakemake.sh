@@ -21,7 +21,6 @@ conda activate biallelic_effects
 echo "Starting a run of Snakemake workflow..."
 snakemake --snakefile "$WORKFLOW_FILE" --cores "$MAX_JOBS" --jobs "$MAX_JOBS" --max-status-checks-per-second 0.01 \
     --rerun-triggers mtime input \
-    --until fitnullglmm \
     2>&1 | tee snakemake_run.log 
 
 echo "Run complete."
