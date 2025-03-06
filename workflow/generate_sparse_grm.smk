@@ -3,7 +3,7 @@ configfile: "config/config.yaml"
 # Quick pipeline for generating sparse GRM on All of Us data (NOT using dsub)
 prune_methods = ['snp']
 #ancestries = ['afr', 'amr', 'eas', 'eur', 'mid', 'sas']
-ancestries = ['eur', 'amr', 'eas']
+ancestries = ['afr', 'amr', 'eas', 'eur', 'sas']
 
 # Assess chrom based on what's in vcf folder
 #ancestries, VARIANT_CLASS = glob_wildcards("vcf/aou.exome_split.v8.{ancestry}.qced.autosomes.maf05.popmax05.{variant_class}.recessive.vcf.bgz")

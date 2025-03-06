@@ -23,6 +23,7 @@ snakemake --snakefile "$WORKFLOW_FILE" --cores "$MAX_JOBS" --jobs "$MAX_JOBS" --
     --rerun-triggers mtime input \
     --nolock \
     --keep-going \
+    -n \
     --rerun-incomplete \
     2>&1 | tee snakemake_run.log 
 
