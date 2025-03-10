@@ -26,9 +26,11 @@ for file in files:
     df["VariantClass"] = variant_class
 
     # Apply filtering if columns exist
+    df = df[df["AC_Allele2"] >= 10]
+
     if "N_case" in df.columns:
         df["N_case"] = pd.to_numeric(df["N_case"], errors="coerce")
-        df = df[df["N_case"] >= 100]  # Keep only if N_case >= 100
+        df = df[df["N_case"] >= 100]
 
     if "AF_Allele2" in df.columns:
         df["AF_Allele2"] = pd.to_numeric(df["AF_Allele2"], errors="coerce")
