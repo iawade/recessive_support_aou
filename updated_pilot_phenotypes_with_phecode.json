@@ -1,0 +1,452 @@
+[
+    {
+        "phenotype": "Age-related macular degeneration",
+        "sex_specific_run": "",
+        "phenotype_ID": "AMD",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "SO_374.51"
+    },
+    {
+        "phenotype": "Asthma",
+        "sex_specific_run": "",
+        "phenotype_ID": "Asth",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_495, RE_475"
+    },
+    {
+        "phenotype": "Atrial Fibrillation",
+        "sex_specific_run": "",
+        "phenotype_ID": "AFib",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_427.21, CV_416.21"
+    },
+    {
+        "phenotype": "Benign and in situ cervical and uterine neoplasms",
+        "sex_specific_run": "Female",
+        "phenotype_ID": "BenCervUterNeo",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_218"
+    },
+    {
+        "phenotype": "Benign and in situ intestinal neoplasms",
+        "sex_specific_run": "",
+        "phenotype_ID": "BenIntNeo",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_208"
+    },
+    {
+        "phenotype": "Breast cancer",
+        "sex_specific_run": "Female",
+        "phenotype_ID": "BreastCanc",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_174, phe_174.1"
+    },
+    {
+        "phenotype": "Cervical cancer",
+        "sex_specific_run": "Female",
+        "phenotype_ID": "CervCanc",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_180.1"
+    },
+    {
+        "phenotype": "Chronic obstructive pulmonary disease (COPD)",
+        "sex_specific_run": "",
+        "phenotype_ID": "COPD",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "RE_474"
+    },
+    {
+        "phenotype": "Chronic Renal Failure",
+        "sex_specific_run": "",
+        "phenotype_ID": "CRF",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_585.3"
+    },
+    {
+        "phenotype": "Colon and rectum cancer",
+        "sex_specific_run": "",
+        "phenotype_ID": "ColonRectCanc",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_153, CA_101.41"
+    },
+    {
+        "phenotype": "Coronary artery disease",
+        "sex_specific_run": "",
+        "phenotype_ID": "CAD",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_411.2, CV_404.11"
+    },
+    {
+        "phenotype": "Excess, frequent and irregular menstrual bleeding",
+        "sex_specific_run": "Female",
+        "phenotype_ID": "EFRMB",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_626.14, phe_626.1, GU_626.1, phe_626.13, GU_626.13"
+    },
+    {
+        "phenotype": "Female infertility",
+        "sex_specific_run": "Female",
+        "phenotype_ID": "FemInf",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "GU_629"
+    },
+    {
+        "phenotype": "Gout",
+        "sex_specific_run": "",
+        "phenotype_ID": "Gout",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_274.1, MS_703.1"
+    },
+    {
+        "phenotype": "Heart Failure (HF)",
+        "sex_specific_run": "",
+        "phenotype_ID": "HF",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "CV_424"
+    },
+    {
+        "phenotype": "Hypertension",
+        "sex_specific_run": "",
+        "phenotype_ID": "HTN",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_401, CV_401"
+    },
+    {
+        "phenotype": "Inflammatory bowel disease",
+        "sex_specific_run": "",
+        "phenotype_ID": "IBD",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_555, GI_522.1"
+    },
+    {
+        "phenotype": "Inguinal, femoral, and abdominal hernia",
+        "sex_specific_run": "",
+        "phenotype_ID": "IFHern",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_550.1, GI_520.11"
+    },
+    {
+        "phenotype": "Interstitial lung disease and pulmonary sarcoidosis",
+        "sex_specific_run": "",
+        "phenotype_ID": "ILDSarc",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "RE_481"
+    },
+    {
+        "phenotype": "Maternal hemorrhage",
+        "sex_specific_run": "Female",
+        "phenotype_ID": "MatHem",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_636.3, PP_904.1, phe_635, phe_636"
+    },
+    {
+        "phenotype": "Non-rheumatic valvular heart disease",
+        "sex_specific_run": "",
+        "phenotype_ID": "NonRheuValv",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_747.12"
+    },
+    {
+        "phenotype": "Pancreatitis",
+        "sex_specific_run": "",
+        "phenotype_ID": "Pancreat",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "GI_554.1"
+    },
+    {
+        "phenotype": "Peptic ulcer disease",
+        "sex_specific_run": "",
+        "phenotype_ID": "PeptUlcer",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_531.4, phe_531, GI_513"
+    },
+    {
+        "phenotype": "Peripheral artery disease",
+        "sex_specific_run": "",
+        "phenotype_ID": "PAD",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_440, CV_436"
+    },
+    {
+        "phenotype": "Psoriasis",
+        "sex_specific_run": "",
+        "phenotype_ID": "Psori",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_696.4, DE_664.4"
+    },
+    {
+        "phenotype": "Rheumatic heart disease",
+        "sex_specific_run": "",
+        "phenotype_ID": "RheumHeaDis",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "CV_400.2"
+    },
+    {
+        "phenotype": "Rheumatoid arthritis",
+        "sex_specific_run": "",
+        "phenotype_ID": "RheumArth",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_714.1, MS_705.1"
+    },
+    {
+        "phenotype": "Stroke",
+        "sex_specific_run": "",
+        "phenotype_ID": "Stroke",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "CV_431.1"
+    },
+    {
+        "phenotype": "Type 2 diabetes",
+        "sex_specific_run": "",
+        "phenotype_ID": "T2Diab",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_250.2, EM_202.2"
+    },
+    {
+        "phenotype": "Urolithiasis",
+        "sex_specific_run": "",
+        "phenotype_ID": "Urolith",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_594.1, GU_585"
+    },
+    {
+        "phenotype": "Varicose Veins",
+        "sex_specific_run": "",
+        "phenotype_ID": "VaricVeins",
+        "definition": "ICD_Phecode",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_454, CV_444.1"
+    },
+    {
+        "phenotype": "Venous Thromboembolism (VTE)",
+        "sex_specific_run": "",
+        "phenotype_ID": "VTE",
+        "definition": "ICD_Phecode, Procedures",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "CV_440.1"
+    },
+    {
+        "phenotype": "Alanine transaminase",
+        "sex_specific_run": "",
+        "phenotype_ID": "ALT",
+        "definition": "N/A (quantitative trait)",
+        "trait_type": "quantitative",
+        "invnormalise": "TRUE",
+        "tol": 1e-05,
+        "phecode": "median_3006923"
+    },
+    {
+        "phenotype": "Alcohol consumption (drinks per week)",
+        "sex_specific_run": "",
+        "phenotype_ID": "AlcCons",
+        "definition": "N/A (quantitative trait)",
+        "trait_type": "quantitative",
+        "invnormalise": "TRUE",
+        "tol": 1e-05,
+        "phecode": NaN
+    },
+    {
+        "phenotype": "Aspartate aminotransferase (AST)",
+        "sex_specific_run": "",
+        "phenotype_ID": "AST",
+        "definition": "N/A (quantitative trait)",
+        "trait_type": "quantitative",
+        "invnormalise": "TRUE",
+        "tol": 1e-05,
+        "phecode": "median_3013721"
+    },
+    {
+        "phenotype": "BMI",
+        "sex_specific_run": "",
+        "phenotype_ID": "BMI",
+        "definition": "N/A (quantitative trait)",
+        "trait_type": "quantitative",
+        "invnormalise": "TRUE",
+        "tol": 1e-05,
+        "phecode": "BMI"
+    },
+    {
+        "phenotype": "C-reactive protein (CRP)",
+        "sex_specific_run": "",
+        "phenotype_ID": "CRP",
+        "definition": "N/A (quantitative trait)",
+        "trait_type": "quantitative",
+        "invnormalise": "TRUE",
+        "tol": 1e-05,
+        "phecode": "SS_825, median_3020460"
+    },
+    {
+        "phenotype": "HDLC",
+        "sex_specific_run": "",
+        "phenotype_ID": "HDLC",
+        "definition": "N/A (quantitative trait)",
+        "trait_type": "quantitative",
+        "invnormalise": "TRUE",
+        "tol": 1e-05,
+        "phecode": "median_3007070"
+    },
+    {
+        "phenotype": "Height",
+        "sex_specific_run": "",
+        "phenotype_ID": "Height",
+        "definition": "N/A (quantitative trait)",
+        "trait_type": "quantitative",
+        "invnormalise": "TRUE",
+        "tol": 1e-05,
+        "phecode": "height"
+    },
+    {
+        "phenotype": "LDLC",
+        "sex_specific_run": "",
+        "phenotype_ID": "LDLC",
+        "definition": "N/A (quantitative trait)",
+        "trait_type": "quantitative",
+        "invnormalise": "TRUE",
+        "tol": 1e-05,
+        "phecode": "median_3028288"
+    },
+    {
+        "phenotype": "Total cholesterol",
+        "sex_specific_run": "",
+        "phenotype_ID": "TChol",
+        "definition": "N/A (quantitative trait)",
+        "trait_type": "quantitative",
+        "invnormalise": "TRUE",
+        "tol": 1e-05,
+        "phecode": "median_3027114"
+    },
+    {
+        "phenotype": "Triglycerides",
+        "sex_specific_run": "",
+        "phenotype_ID": "TG",
+        "definition": "N/A (quantitative trait)",
+        "trait_type": "quantitative",
+        "invnormalise": "TRUE",
+        "tol": 1e-05,
+        "phecode": "median_3022192"
+    },
+    {
+        "phenotype": "WHR adjusted for BMI",
+        "sex_specific_run": "",
+        "phenotype_ID": "WHRBMI",
+        "definition": "N/A (quantitative trait)",
+        "trait_type": "quantitative",
+        "invnormalise": "TRUE",
+        "tol": 1e-05,
+        "phecode": "WHRadjBMI"
+    },
+    {
+        "phenotype": "Hip replacement (operation)",
+        "sex_specific_run": "",
+        "phenotype_ID": "HipRep",
+        "definition": "Procedures",
+        "trait_type": "binary",
+        "invnormalise": "FALSE",
+        "tol": 0.02,
+        "phecode": "phe_4134857"
+    },
+    {
+        "phenotype": "HbA1c",
+        "sex_specific_run": "",
+        "phenotype_ID": "HbA1c",
+        "definition": "N/A (quantitative trait)",
+        "trait_type": "quantitative",
+        "invnormalise": "TRUE",
+        "tol": 1e-05,
+        "phecode": "median_3004410"
+    }
+]
