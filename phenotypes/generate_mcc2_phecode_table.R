@@ -7,6 +7,9 @@
 # A minimum case count of 2 was used for both phecode and phecodeX conditions. 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Code to generate the phecode table ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# export LD_LIBRARY_PATH=/home/jupyter/anaconda3/lib:$LD_LIBRARY_PATH # may need this
+
 library(tidyverse)
 if(!require(PheWAS)) devtools::install_github("PheWAS/PheWAS")
 library(PheWAS)
