@@ -30,6 +30,8 @@ bq <- function(query) {bq_table_download(bq_project_query(
 
 #temporary python setup
 library(reticulate)
+use_python("/home/jupyter/conda_envs/python_general/bin/python", required = TRUE) # not interoperable anymore - but works for me!
+reticulate::py_config()
 bigquery=import("google.cloud.bigquery")
 client = bigquery$Client()
 
